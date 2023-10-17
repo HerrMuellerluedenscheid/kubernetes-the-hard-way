@@ -17,22 +17,25 @@ In this section a dedicated [Virtual Private Cloud](https://cloud.google.com/com
 Create the `kubernetes-the-hard-way` custom VPC network:
 
 ```
-gcloud compute networks create kubernetes-the-hard-way --subnet-mode custom
+hcloud network create --name kubernetes-the-hard-way --ip-range 10.240.0.0/24
 ```
 
 A [subnet](https://cloud.google.com/compute/docs/vpc/#vpc_networks_and_subnets) must be provisioned with an IP address range large enough to assign a private IP address to each node in the Kubernetes cluster.
 
 Create the `kubernetes` subnet in the `kubernetes-the-hard-way` VPC network:
 
-```
-gcloud compute networks subnets create kubernetes \
-  --network kubernetes-the-hard-way \
-  --range 10.240.0.0/24
+```shell
+hcloud network add-subnet kubernetes-the-hard-way  --ip-range 10.240.0.0/24 --network-zone eu-central --type server
 ```
 
 > The `10.240.0.0/24` IP address range can host up to 254 compute instances.
 
 ### Firewall Rules
+
+Create a firewall
+```shell
+hcloud firewall create --name kubernetes-the-hard-way
+```
 
 Create a firewall rule that allows internal communication across all protocols:
 
@@ -98,19 +101,19 @@ The compute instances in this lab will be provisioned using [Ubuntu Server](http
 
 Create three compute instances which will host the Kubernetes control plane:
 
-```
+
+# TODO hcloud server create --firewall kubernetes-the-hard-way --name worker0 --image ubuntu-22.04 --type cpx11
+```shell
 for i in 0 1 2; do
-  gcloud compute instances create controller-${i} \
-    --async \
-    --boot-disk-size 200GB \
-    --can-ip-forward \
-    --image-family ubuntu-2004-lts \
-    --image-project ubuntu-os-cloud \
-    --machine-type e2-standard-2 \
-    --private-network-ip 10.240.0.1${i} \
-    --scopes compute-rw,storage-ro,service-management,service-control,logging-write,monitoring \
-    --subnet kubernetes \
-    --tags kubernetes-the-hard-way,controller
+  hcloud server create --firewall kubernetes-the-hard-way --name controller-${i} --image ubuntu-22.04 --type cpx11 --network kubernetes-the-hard-way --label tag=controller-${i} --ssh-key kubernetes-the-hard-way
+done
+```
+
+For convenience assign environment variables for each controller instance (`CONTROLLER0`, `CONTROLLER1`, etc):
+
+```shell
+for i in 0 1 2; do    1 ✘  system 
+  export CONTROLLER${i}=$(hcloud server list --selector "tag=controller-${i}" -o columns=ipv4 -o noheader)
 done
 ```
 
@@ -122,20 +125,17 @@ Each worker instance requires a pod subnet allocation from the Kubernetes cluste
 
 Create three compute instances which will host the Kubernetes worker nodes:
 
-```
+```shell
 for i in 0 1 2; do
-  gcloud compute instances create worker-${i} \
-    --async \
-    --boot-disk-size 200GB \
-    --can-ip-forward \
-    --image-family ubuntu-2004-lts \
-    --image-project ubuntu-os-cloud \
-    --machine-type e2-standard-2 \
-    --metadata pod-cidr=10.200.${i}.0/24 \
-    --private-network-ip 10.240.0.2${i} \
-    --scopes compute-rw,storage-ro,service-management,service-control,logging-write,monitoring \
-    --subnet kubernetes \
-    --tags kubernetes-the-hard-way,worker
+  hcloud server create --firewall kubernetes-the-hard-way --name worker-${i} --image ubuntu-22.04 --type cpx11 --network kubernetes-the-hard-way --label tag=worker-${i} --ssh-key kubernetes-the-hard-way
+done
+```
+
+For convenience assign environment variables for each worker instance (`WORKER0`, `WORKER1`, etc):
+
+```shell
+for i in 0 1 2; do
+  export WORKER${i}=$(hcloud server list --selector "tag=worker-${i}" -o columns=ipv4 -o noheader)
 done
 ```
 
@@ -144,29 +144,40 @@ done
 List the compute instances in your default compute zone:
 
 ```
-gcloud compute instances list --filter="tags.items=kubernetes-the-hard-way"
+hcloud server list
 ```
 
 > output
 
 ```
-NAME          ZONE        MACHINE_TYPE   PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP    STATUS
-controller-0  us-west1-c  e2-standard-2               10.240.0.10  XX.XX.XX.XXX   RUNNING
-controller-1  us-west1-c  e2-standard-2               10.240.0.11  XX.XXX.XXX.XX  RUNNING
-controller-2  us-west1-c  e2-standard-2               10.240.0.12  XX.XXX.XX.XXX  RUNNING
-worker-0      us-west1-c  e2-standard-2               10.240.0.20  XX.XX.XXX.XXX  RUNNING
-worker-1      us-west1-c  e2-standard-2               10.240.0.21  XX.XX.XX.XXX   RUNNING
-worker-2      us-west1-c  e2-standard-2               10.240.0.22  XX.XXX.XX.XX   RUNNING
+ID         NAME           STATUS    IPV4              IPV6                      PRIVATE NET                            DATACENTER   AGE
+38250477   controller-0   running   XX.XXX.XX.XX      2a01:4f9:c012:9b39::/64   10.240.0.2 (kubernetes-the-hard-way)   hel1-dc2     2m
+38250489   controller-1   running   XX.XXX.XX.XX      2a01:4f9:c012:540d::/64   10.240.0.3 (kubernetes-the-hard-way)   hel1-dc2     1m
+38250502   controller-2   running   XX.XXX.XX.XX      2a01:4f9:c010:ac33::/64   10.240.0.4 (kubernetes-the-hard-way)   hel1-dc2     1m
+38250524   worker-0       running   XX.XXX.XX.XX      2a01:4f9:c012:92bd::/64   10.240.0.5 (kubernetes-the-hard-way)   hel1-dc2     1m
+38250539   worker-1       running   XX.XXX.XX.XX      2a01:4f9:c010:a664::/64   10.240.0.6 (kubernetes-the-hard-way)   hel1-dc2     45s
+38250543   worker-2       running   XX.XXX.XX.XX      2a01:4f9:c012:7e4a::/64   10.240.0.7 (kubernetes-the-hard-way)   hel1-dc2     28s
 ```
 
 ## Configuring SSH Access
 
 SSH will be used to configure the controller and worker instances. When connecting to compute instances for the first time SSH keys will be generated for you and stored in the project or instance metadata as described in the [connecting to instances](https://cloud.google.com/compute/docs/instances/connecting-to-instance) documentation.
 
+Generate a new SSH key-pair without setting the password:
+```shell
+ssh-keygen -t ed25519 -C "kubernetes-the-hard-way" -N "" -f /home/$USER/.ssh/hetzner_cloud_ed25519
+```
+
+Upload the **public** key to the Hetzner Cloud:
+
+```shell
+hcloud ssh-key create --name kubernetes-the-hard-way --public-key-from-file /home/$USER/.ssh/hetzner_cloud_ed25519.pub
+```
+
 Test SSH access to the `controller-0` compute instances:
 
-```
-gcloud compute ssh controller-0
+```shell
+ssh -i /home/$USER/.ssh/hetzner_cloud_ed25519 root@${CONTROLLER0}
 ```
 
 If this is your first time connecting to a compute instance SSH keys will be generated for you. Enter a passphrase at the prompt to continue:
