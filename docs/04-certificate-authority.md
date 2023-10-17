@@ -8,7 +8,7 @@ In this section you will provision a Certificate Authority that can be used to g
 
 Generate the CA configuration file, certificate, and private key:
 
-```
+```shell
 {
 
 cat > ca-config.json <<EOF
@@ -132,11 +132,9 @@ cat > ${instance}-csr.json <<EOF
 }
 EOF
 
-EXTERNAL_IP=$(gcloud compute instances describe ${instance} \
-  --format 'value(networkInterfaces[0].accessConfigs[0].natIP)')
+EXTERNAL_IP=$(hcloud server describe ${instance} -o json | jq '.public_net.ipv4.ip')
 
-INTERNAL_IP=$(gcloud compute instances describe ${instance} \
-  --format 'value(networkInterfaces[0].networkIP)')
+INTERAL_IP=$(hcloud server describe ${instance} -o json | jq -r '.private_net[0].ip')
 
 cfssl gencert \
   -ca=ca.pem \
@@ -296,12 +294,12 @@ The `kubernetes-the-hard-way` static IP address will be included in the list of 
 
 Generate the Kubernetes API Server certificate and private key:
 
+We are using the public IP address of controler 0 as the public IP address of the kubernetes API server.
+
 ```
 {
 
-KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
-  --region $(gcloud config get-value compute/region) \
-  --format 'value(address)')
+KUBERNETES_PUBLIC_ADDRESS=${CONTROLLER0}
 
 KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
 
@@ -395,17 +393,17 @@ service-account.pem
 Copy the appropriate certificates and private keys to each worker instance:
 
 ```
-for instance in worker-0 worker-1 worker-2; do
-  gcloud compute scp ca.pem ${instance}-key.pem ${instance}.pem ${instance}:~/
-done
+scp -i $HOME/.ssh/hetzner_cloud_ed25519 ca.pem worker-0-key.pem worker-0.pem root@${WORKER0}:~/
+scp -i $HOME/.ssh/hetzner_cloud_ed25519 ca.pem worker-1-key.pem worker-1.pem root@${WORKER1}:~/
+scp -i $HOME/.ssh/hetzner_cloud_ed25519 ca.pem worker-2-key.pem worker-2.pem root@${WORKER2}:~/
 ```
 
 Copy the appropriate certificates and private keys to each controller instance:
 
-```
-for instance in controller-0 controller-1 controller-2; do
-  gcloud compute scp ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
-    service-account-key.pem service-account.pem ${instance}:~/
+```shell
+for instance in ${CONTROLLER0} ${CONTROLLER1} ${CONTROLLER2}; do
+  scp -i $HOME/.ssh/hetzner_cloud_ed25519 ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
+    service-account-key.pem service-account.pem root@${instance}:~/
 done
 ```
 

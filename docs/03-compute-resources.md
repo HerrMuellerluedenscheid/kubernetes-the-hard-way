@@ -37,22 +37,12 @@ Create a firewall
 hcloud firewall create --name kubernetes-the-hard-way
 ```
 
-Create a firewall rule that allows internal communication across all protocols:
-
-```
-gcloud compute firewall-rules create kubernetes-the-hard-way-allow-internal \
-  --allow tcp,udp,icmp \
-  --network kubernetes-the-hard-way \
-  --source-ranges 10.240.0.0/24,10.200.0.0/16
-```
-
 Create a firewall rule that allows external SSH, ICMP, and HTTPS:
 
-```
-gcloud compute firewall-rules create kubernetes-the-hard-way-allow-external \
-  --allow tcp:22,tcp:6443,icmp \
-  --network kubernetes-the-hard-way \
-  --source-ranges 0.0.0.0/0
+```shell
+hcloud firewall add-rule kubernetes-the-hard-way --protocol icmp --source-ips 0.0.0.0/0 --direction in
+hcloud firewall add-rule kubernetes-the-hard-way --protocol tcp --port 22 --source-ips 0.0.0.0/0 --direction in
+hcloud firewall add-rule kubernetes-the-hard-way --protocol tcp --port 6443 --source-ips 0.0.0.0/0 --direction in
 ```
 
 > An [external load balancer](https://cloud.google.com/compute/docs/load-balancing/network/) will be used to expose the Kubernetes API Servers to remote clients.
@@ -112,7 +102,7 @@ done
 For convenience assign environment variables for each controller instance (`CONTROLLER0`, `CONTROLLER1`, etc):
 
 ```shell
-for i in 0 1 2; do    1 ✘  system 
+for i in 0 1 2; do
   export CONTROLLER${i}=$(hcloud server list --selector "tag=controller-${i}" -o columns=ipv4 -o noheader)
 done
 ```
@@ -138,6 +128,12 @@ for i in 0 1 2; do
   export WORKER${i}=$(hcloud server list --selector "tag=worker-${i}" -o columns=ipv4 -o noheader)
 done
 ```
+
+Confirm that the environment variables were created. This should list 6 IPv4 addresses:
+```shell
+echo $CONTROLLER0 $CONTROLLER1 $CONTROLLER2 $WORKER0 $WORKER1 $WORKER2
+```
+
 
 ### Verification
 
@@ -165,19 +161,19 @@ SSH will be used to configure the controller and worker instances. When connecti
 
 Generate a new SSH key-pair without setting the password:
 ```shell
-ssh-keygen -t ed25519 -C "kubernetes-the-hard-way" -N "" -f /home/$USER/.ssh/hetzner_cloud_ed25519
+ssh-keygen -t ed25519 -C "kubernetes-the-hard-way" -N "" -f $HOME/.ssh/hetzner_cloud_ed25519
 ```
 
 Upload the **public** key to the Hetzner Cloud:
 
 ```shell
-hcloud ssh-key create --name kubernetes-the-hard-way --public-key-from-file /home/$USER/.ssh/hetzner_cloud_ed25519.pub
+hcloud ssh-key create --name kubernetes-the-hard-way --public-key-from-file $HOME/.ssh/hetzner_cloud_ed25519.pub
 ```
 
 Test SSH access to the `controller-0` compute instances:
 
 ```shell
-ssh -i /home/$USER/.ssh/hetzner_cloud_ed25519 root@${CONTROLLER0}
+ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${CONTROLLER0}
 ```
 
 If this is your first time connecting to a compute instance SSH keys will be generated for you. Enter a passphrase at the prompt to continue:

@@ -2,6 +2,17 @@
 
 In this lab you will install the command line utilities required to complete this tutorial: [cfssl](https://github.com/cloudflare/cfssl), [cfssljson](https://github.com/cloudflare/cfssl), and [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl).
 
+## Install `jq`
+
+`jq` is a lightweight and flexible command-line JSON processor.
+
+### OS X
+
+```shell
+brew install jq
+```
+
+TODO: add linux instructions
 
 ## Install CFSSL
 

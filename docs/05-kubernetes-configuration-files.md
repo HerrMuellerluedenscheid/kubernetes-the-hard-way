@@ -12,10 +12,10 @@ Each kubeconfig requires a Kubernetes API Server to connect to. To support high 
 
 Retrieve the `kubernetes-the-hard-way` static IP address:
 
+Using Controller0 ip address
+
 ```
-KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
-  --region $(gcloud config get-value compute/region) \
-  --format 'value(address)')
+KUBERNETES_PUBLIC_ADDRESS=${CONTROLLER0}
 ```
 
 ### The kubelet Kubernetes Configuration File
@@ -190,24 +190,21 @@ Results:
 admin.kubeconfig
 ```
 
-
-## 
-
 ## Distribute the Kubernetes Configuration Files
 
 Copy the appropriate `kubelet` and `kube-proxy` kubeconfig files to each worker instance:
 
 ```
-for instance in worker-0 worker-1 worker-2; do
-  gcloud compute scp ${instance}.kubeconfig kube-proxy.kubeconfig ${instance}:~/
-done
+scp -i $HOME/.ssh/hetzner_cloud_ed25519 worker-0.kubeconfig kube-proxy.kubeconfig root@${WORKER0}:~/
+scp -i $HOME/.ssh/hetzner_cloud_ed25519 worker-1.kubeconfig kube-proxy.kubeconfig root@${WORKER1}:~/
+scp -i $HOME/.ssh/hetzner_cloud_ed25519 worker-2.kubeconfig kube-proxy.kubeconfig root@${WORKER2}:~/
 ```
 
 Copy the appropriate `kube-controller-manager` and `kube-scheduler` kubeconfig files to each controller instance:
 
 ```
-for instance in controller-0 controller-1 controller-2; do
-  gcloud compute scp admin.kubeconfig kube-controller-manager.kubeconfig kube-scheduler.kubeconfig ${instance}:~/
+for instance in ${CONTROLLER0} ${CONTROLLER1} ${CONTROLLER2}; do
+  scp -i $HOME/.ssh/hetzner_cloud_ed25519 admin.kubeconfig kube-controller-manager.kubeconfig kube-scheduler.kubeconfig ${instance}:~/
 done
 ```
 
