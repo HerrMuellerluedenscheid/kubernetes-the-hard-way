@@ -7,7 +7,7 @@ Kubernetes components are stateless and store cluster state in [etcd](https://gi
 The commands in this lab must be run on each controller instance: `controller-0`, `controller-1`, and `controller-2`. Login to each controller instance using the `gcloud` command. Example:
 
 ```
-gcloud compute ssh controller-0
+ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${CONTROLER0}
 ```
 
 ### Running commands in parallel with tmux
@@ -46,9 +46,9 @@ Extract and install the `etcd` server and the `etcdctl` command line utility:
 
 The instance internal IP address will be used to serve client requests and communicate with etcd cluster peers. Retrieve the internal IP address for the current compute instance:
 
+TODO: This might not working, because the interface name can be different on each node. Need to find a way to get the internal IP address of the current node.
 ```
-INTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" \
-  http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)
+INTERNAL_IP=$(ip -4 addr show enp7s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 ```
 
 Each etcd member must have a unique name within an etcd cluster. Set the etcd name to match the hostname of the current compute instance:
