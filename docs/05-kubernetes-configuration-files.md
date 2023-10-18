@@ -204,7 +204,7 @@ Copy the appropriate `kube-controller-manager` and `kube-scheduler` kubeconfig f
 
 ```
 for instance in ${CONTROLLER0} ${CONTROLLER1} ${CONTROLLER2}; do
-  scp -i $HOME/.ssh/hetzner_cloud_ed25519 admin.kubeconfig kube-controller-manager.kubeconfig kube-scheduler.kubeconfig ${instance}:~/
+  scp -i $HOME/.ssh/hetzner_cloud_ed25519 admin.kubeconfig kube-controller-manager.kubeconfig kube-scheduler.kubeconfig root@${instance}:~/
 done
 ```
 

@@ -294,12 +294,13 @@ The `kubernetes-the-hard-way` static IP address will be included in the list of 
 
 Generate the Kubernetes API Server certificate and private key:
 
-We are using the public IP address of controler 0 as the public IP address of the kubernetes API server.
+<!-- We are using the public IP address of controler 0 as the public IP address of the kubernetes API server. -->
+This has to be each controllers public IP address, because the API server is running on each controller.
 
 ```
 {
 
-KUBERNETES_PUBLIC_ADDRESS=${CONTROLLER0}
+KUBERNETES_PUBLIC_ADDRESS=$(hcloud server describe controller-0 -o json | jq '.public_net.ipv4.ip')
 
 KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
 
@@ -326,7 +327,7 @@ cfssl gencert \
   -ca=ca.pem \
   -ca-key=ca-key.pem \
   -config=ca-config.json \
-  -hostname=10.32.0.1,10.240.0.10,10.240.0.11,10.240.0.12,${KUBERNETES_PUBLIC_ADDRESS},127.0.0.1,${KUBERNETES_HOSTNAMES} \
+  -hostname=10.32.0.1,10.240.0.2,10.240.0.3,10.240.0.4,${KUBERNETES_PUBLIC_ADDRESS},127.0.0.1,${KUBERNETES_HOSTNAMES} \
   -profile=kubernetes \
   kubernetes-csr.json | cfssljson -bare kubernetes
 

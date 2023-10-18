@@ -4,10 +4,10 @@ In this lab you will bootstrap the Kubernetes control plane across three compute
 
 ## Prerequisites
 
-The commands in this lab must be run on each controller instance: `controller-0`, `controller-1`, and `controller-2`. Login to each controller instance using the `gcloud` command. Example:
+The commands in this lab must be run on each controller instance: `controller-0`, `controller-1`, and `controller-2`. Login to each controller instance using the `hcloud` command. Example:
 
-```
-gcloud compute ssh controller-0
+```shell
+ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${CONTROLER0}
 ```
 
 ### Running commands in parallel with tmux
@@ -58,19 +58,11 @@ Install the Kubernetes binaries:
 The instance internal IP address will be used to advertise the API Server to members of the cluster. Retrieve the internal IP address for the current compute instance:
 
 ```
-INTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" \
-  http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)
+INTERNAL_IP=$(ip -4 addr show enp7s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 ```
 
 ```
-REGION=$(curl -s -H "Metadata-Flavor: Google" \
-  http://metadata.google.internal/computeMetadata/v1/project/attributes/google-compute-default-region)
-```
-
-```
-KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
-  --region $REGION \
-  --format 'value(address)')
+KUBERNETES_PUBLIC_ADDRESS=$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 ```
 
 Create the `kube-apiserver.service` systemd unit file:
@@ -97,7 +89,7 @@ ExecStart=/usr/local/bin/kube-apiserver \\
   --etcd-cafile=/var/lib/kubernetes/ca.pem \\
   --etcd-certfile=/var/lib/kubernetes/kubernetes.pem \\
   --etcd-keyfile=/var/lib/kubernetes/kubernetes-key.pem \\
-  --etcd-servers=https://10.240.0.10:2379,https://10.240.0.11:2379,https://10.240.0.12:2379 \\
+  --etcd-servers=https://10.240.0.2:2379,https://10.240.0.3:2379,https://10.240.0.4:2379 \\
   --event-ttl=1h \\
   --encryption-provider-config=/var/lib/kubernetes/encryption-config.yaml \\
   --kubelet-certificate-authority=/var/lib/kubernetes/ca.pem \\
