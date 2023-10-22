@@ -15,7 +15,7 @@ Retrieve the `kubernetes-the-hard-way` static IP address:
 Using Controller0 ip address
 
 ```
-KUBERNETES_PUBLIC_ADDRESS=${CONTROLLER0}
+KUBERNETES_PUBLIC_ADDRESS=$(hcloud load-balancer list --selector tag=kubernetes-the-hard-way -o columns=ipv4 -o noheader)
 ```
 
 ### The kubelet Kubernetes Configuration File

@@ -294,13 +294,13 @@ The `kubernetes-the-hard-way` static IP address will be included in the list of 
 
 Generate the Kubernetes API Server certificate and private key:
 
-<!-- We are using the public IP address of controler 0 as the public IP address of the kubernetes API server. -->
 This has to be each controllers public IP address, because the API server is running on each controller.
 
 ```
 {
 
-KUBERNETES_PUBLIC_ADDRESS=$(hcloud server describe controller-0 -o json | jq '.public_net.ipv4.ip')
+# TODO Add load balancer public IP
+KUBERNETES_PUBLIC_ADDRESS=167.235.108.223
 
 KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
 

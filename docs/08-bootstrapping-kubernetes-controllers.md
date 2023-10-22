@@ -289,7 +289,7 @@ In this section you will configure RBAC permissions to allow the Kubernetes API 
 The commands in this section will effect the entire cluster and only need to be run once from one of the controller nodes.
 
 ```
-gcloud compute ssh controller-0
+ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${CONTROLLER0}
 ```
 
 Create the `system:kube-apiserver-to-kubelet` [ClusterRole](https://kubernetes.io/docs/admin/authorization/rbac/#role-and-clusterrole) with permissions to access the Kubelet API and perform most common tasks associated with managing pods:
@@ -353,6 +353,11 @@ Create the external load balancer network resources:
 
 ```
 {
+
+  hcloud load-balancer create --label tag=kubernetes-the-hard-way --type lb11 --name kubernetes-the-hard-way --network-zone kubernetes-the-hard-way --network-zone eu-central
+
+hcloud load-balancer add-target --label-selector "role=controller" kubernetes-the-hard-way
+
   KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
     --region $(gcloud config get-value compute/region) \
     --format 'value(address)')

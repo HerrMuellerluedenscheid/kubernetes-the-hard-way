@@ -95,7 +95,7 @@ Create three compute instances which will host the Kubernetes control plane:
 # TODO hcloud server create --firewall kubernetes-the-hard-way --name worker0 --image ubuntu-22.04 --type cpx11
 ```shell
 for i in 0 1 2; do
-  hcloud server create --firewall kubernetes-the-hard-way --name controller-${i} --image ubuntu-22.04 --type cpx11 --network kubernetes-the-hard-way --label tag=controller-${i} --ssh-key kubernetes-the-hard-way
+  hcloud server create --firewall kubernetes-the-hard-way --name controller-${i} --image ubuntu-22.04 --type cpx11 --network kubernetes-the-hard-way --label tag=controller-${i} --label role=controller --ssh-key kubernetes-the-hard-way
 done
 ```
 
