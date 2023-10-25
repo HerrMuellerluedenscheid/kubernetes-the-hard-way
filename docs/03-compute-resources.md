@@ -16,7 +16,7 @@ In this section a dedicated [Virtual Private Cloud](https://cloud.google.com/com
 
 Create the `kubernetes-the-hard-way` custom VPC network:
 
-```
+```shell
 hcloud network create --name kubernetes-the-hard-way --ip-range 10.240.0.0/24
 ```
 
@@ -25,7 +25,10 @@ A [subnet](https://cloud.google.com/compute/docs/vpc/#vpc_networks_and_subnets) 
 Create the `kubernetes` subnet in the `kubernetes-the-hard-way` VPC network:
 
 ```shell
-hcloud network add-subnet kubernetes-the-hard-way  --ip-range 10.240.0.0/24 --network-zone eu-central --type server
+hcloud network add-subnet kubernetes-the-hard-way \
+  --network-zone eu-central \
+  --ip-range 10.240.0.0/24 \
+  --type server
 ```
 
 > The `10.240.0.0/24` IP address range can host up to 254 compute instances.
@@ -91,8 +94,6 @@ The compute instances in this lab will be provisioned using [Ubuntu Server](http
 
 Create three compute instances which will host the Kubernetes control plane:
 
-
-# TODO hcloud server create --firewall kubernetes-the-hard-way --name worker0 --image ubuntu-22.04 --type cpx11
 ```shell
 for i in 0 1 2; do
   hcloud server create --firewall kubernetes-the-hard-way --name controller-${i} --image ubuntu-22.04 --type cpx11 --network kubernetes-the-hard-way --label tag=controller-${i} --label role=controller --ssh-key kubernetes-the-hard-way
