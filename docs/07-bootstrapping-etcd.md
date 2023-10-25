@@ -4,10 +4,10 @@ Kubernetes components are stateless and store cluster state in [etcd](https://gi
 
 ## Prerequisites
 
-The commands in this lab must be run on each controller instance: `controller-0`, `controller-1`, and `controller-2`. Login to each controller instance using the `gcloud` command. Example:
+The commands in this lab must be run on each controller instance: `controller-0`, `controller-1`, and `controller-2`. Login to each controller instance using the `hcloud` command. Example:
 
-```
-ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${CONTROLER0}
+```shell
+ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${CONTROLLER0}
 ```
 
 ### Running commands in parallel with tmux
@@ -49,6 +49,11 @@ The instance internal IP address will be used to serve client requests and commu
 TODO: This might not working, because the interface name can be different on each node. Need to find a way to get the internal IP address of the current node.
 ```
 INTERNAL_IP=$(ip -4 addr show enp7s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+```
+
+Verify the `INTERNAL_IP` was correctly set:
+```
+echo ${INTERNAL_IP}
 ```
 
 Each etcd member must have a unique name within an etcd cluster. Set the etcd name to match the hostname of the current compute instance:

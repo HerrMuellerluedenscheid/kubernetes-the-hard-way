@@ -14,7 +14,7 @@ Retrieve the `kubernetes-the-hard-way` static IP address:
 
 Using Controller0 ip address
 
-```
+```shell
 KUBERNETES_PUBLIC_ADDRESS=$(hcloud load-balancer list --selector tag=kubernetes-the-hard-way -o columns=ipv4 -o noheader)
 ```
 
@@ -26,7 +26,7 @@ When generating kubeconfig files for Kubelets the client certificate matching th
 
 Generate a kubeconfig file for each worker node:
 
-```
+```shell
 for instance in worker-0 worker-1 worker-2; do
   kubectl config set-cluster kubernetes-the-hard-way \
     --certificate-authority=ca.pem \
@@ -61,7 +61,7 @@ worker-2.kubeconfig
 
 Generate a kubeconfig file for the `kube-proxy` service:
 
-```
+```shell
 {
   kubectl config set-cluster kubernetes-the-hard-way \
     --certificate-authority=ca.pem \
@@ -94,7 +94,7 @@ kube-proxy.kubeconfig
 
 Generate a kubeconfig file for the `kube-controller-manager` service:
 
-```
+```shell
 {
   kubectl config set-cluster kubernetes-the-hard-way \
     --certificate-authority=ca.pem \
@@ -128,7 +128,7 @@ kube-controller-manager.kubeconfig
 
 Generate a kubeconfig file for the `kube-scheduler` service:
 
-```
+```shell
 {
   kubectl config set-cluster kubernetes-the-hard-way \
     --certificate-authority=ca.pem \
@@ -161,7 +161,7 @@ kube-scheduler.kubeconfig
 
 Generate a kubeconfig file for the `admin` user:
 
-```
+```shell
 {
   kubectl config set-cluster kubernetes-the-hard-way \
     --certificate-authority=ca.pem \
@@ -194,7 +194,7 @@ admin.kubeconfig
 
 Copy the appropriate `kubelet` and `kube-proxy` kubeconfig files to each worker instance:
 
-```
+```shell
 scp -i $HOME/.ssh/hetzner_cloud_ed25519 worker-0.kubeconfig kube-proxy.kubeconfig root@${WORKER0}:~/
 scp -i $HOME/.ssh/hetzner_cloud_ed25519 worker-1.kubeconfig kube-proxy.kubeconfig root@${WORKER1}:~/
 scp -i $HOME/.ssh/hetzner_cloud_ed25519 worker-2.kubeconfig kube-proxy.kubeconfig root@${WORKER2}:~/
@@ -202,7 +202,7 @@ scp -i $HOME/.ssh/hetzner_cloud_ed25519 worker-2.kubeconfig kube-proxy.kubeconfi
 
 Copy the appropriate `kube-controller-manager` and `kube-scheduler` kubeconfig files to each controller instance:
 
-```
+```shell
 for instance in ${CONTROLLER0} ${CONTROLLER1} ${CONTROLLER2}; do
   scp -i $HOME/.ssh/hetzner_cloud_ed25519 admin.kubeconfig kube-controller-manager.kubeconfig kube-scheduler.kubeconfig root@${instance}:~/
 done

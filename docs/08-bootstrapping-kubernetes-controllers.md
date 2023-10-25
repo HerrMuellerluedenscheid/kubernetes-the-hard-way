@@ -45,7 +45,7 @@ Install the Kubernetes binaries:
 
 ### Configure the Kubernetes API Server
 
-```
+```shell
 {
   sudo mkdir -p /var/lib/kubernetes/
 

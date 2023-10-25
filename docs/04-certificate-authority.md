@@ -296,11 +296,10 @@ Generate the Kubernetes API Server certificate and private key:
 
 This has to be each controllers public IP address, because the API server is running on each controller.
 
-```
+```shell
 {
 
-# TODO Add load balancer public IP
-KUBERNETES_PUBLIC_ADDRESS=167.235.108.223
+KUBERNETES_PUBLIC_ADDRESS=$(hcloud load-balancer list --selector tag=kubernetes-the-hard-way -o columns=ipv4 -o noheader)
 
 KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
 
@@ -349,7 +348,7 @@ The Kubernetes Controller Manager leverages a key pair to generate and sign serv
 
 Generate the `service-account` certificate and private key:
 
-```
+```shell
 {
 
 cat > service-account-csr.json <<EOF
@@ -393,7 +392,7 @@ service-account.pem
 
 Copy the appropriate certificates and private keys to each worker instance:
 
-```
+```shell
 scp -i $HOME/.ssh/hetzner_cloud_ed25519 ca.pem worker-0-key.pem worker-0.pem root@${WORKER0}:~/
 scp -i $HOME/.ssh/hetzner_cloud_ed25519 ca.pem worker-1-key.pem worker-1.pem root@${WORKER1}:~/
 scp -i $HOME/.ssh/hetzner_cloud_ed25519 ca.pem worker-2-key.pem worker-2.pem root@${WORKER2}:~/
