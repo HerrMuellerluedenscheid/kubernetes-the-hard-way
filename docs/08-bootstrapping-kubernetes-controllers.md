@@ -354,10 +354,6 @@ Create the external load balancer network resources:
 ```
 {
 
-  hcloud load-balancer create --label tag=kubernetes-the-hard-way --type lb11 --name kubernetes-the-hard-way --network-zone kubernetes-the-hard-way --network-zone eu-central
-
-hcloud load-balancer add-target --label-selector "role=controller" kubernetes-the-hard-way
-
   KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
     --region $(gcloud config get-value compute/region) \
     --format 'value(address)')

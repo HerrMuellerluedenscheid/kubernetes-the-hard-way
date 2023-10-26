@@ -222,3 +222,14 @@ Connection to XX.XX.XXX.XXX closed
 ```
 
 Next: [Provisioning a CA and Generating TLS Certificates](04-certificate-authority.md)
+
+## Create Load Balancer
+
+```shell
+hcloud load-balancer create --label tag=kubernetes-the-hard-way --type lb11 --name kubernetes-the-hard-way --network-zone kubernetes-the-hard-way --network-zone eu-central
+
+# connect load balancers to controllers
+hcloud load-balancer add-target --label-selector "role=controller" kubernetes-the-hard-way
+```
+
+If you check the hetzner console you will see that this load balancer has and will have an unhealthy state for the next steps. This will only change once all services are bootstrapped.
