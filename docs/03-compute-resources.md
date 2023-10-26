@@ -228,6 +228,9 @@ Next: [Provisioning a CA and Generating TLS Certificates](04-certificate-authori
 ```shell
 hcloud load-balancer create --label tag=kubernetes-the-hard-way --type lb11 --name kubernetes-the-hard-way --network-zone kubernetes-the-hard-way --network-zone eu-central
 
+# forward all traffic comming in on port 6443 to the controllers
+hcloud load-balancer add-service kubernetes-the-hard-way  --destination-port 6443 --listen-port 6443 --protocol tcp
+
 # connect load balancers to controllers
 hcloud load-balancer add-target --label-selector "role=controller" kubernetes-the-hard-way
 ```
