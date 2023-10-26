@@ -199,45 +199,15 @@ ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${CONTROLLER0}
 If this is your first time connecting to a compute instance SSH keys will be generated for you. Enter a passphrase at the prompt to continue:
 
 ```
-WARNING: The public SSH key file for gcloud does not exist.
-WARNING: The private SSH key file for gcloud does not exist.
-WARNING: You do not have an SSH key for gcloud.
-WARNING: SSH keygen will be executed to generate a key.
-Generating public/private rsa key pair.
-Enter passphrase (empty for no passphrase):
-Enter same passphrase again:
+❯ ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${WORKER0}
+
+The authenticity of host 'XX.XX.XXX.XXX (XX.XX.XXX.XXX)' can't be established.
+ED25519 key fingerprint is SHA256:ijdfoiDoisDfj12309sd0f9u123oijsdf.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? 
 ```
 
-At this point the generated SSH keys will be uploaded and stored in your project:
-
-```
-Your identification has been saved in /home/$USER/.ssh/google_compute_engine.
-Your public key has been saved in /home/$USER/.ssh/google_compute_engine.pub.
-The key fingerprint is:
-SHA256:nz1i8jHmgQuGt+WscqP5SeIaSy5wyIJeL71MuV+QruE $USER@$HOSTNAME
-The key's randomart image is:
-+---[RSA 2048]----+
-|                 |
-|                 |
-|                 |
-|        .        |
-|o.     oS        |
-|=... .o .o o     |
-|+.+ =+=.+.X o    |
-|.+ ==O*B.B = .   |
-| .+.=EB++ o      |
-+----[SHA256]-----+
-Updating project ssh metadata...-Updated [https://www.googleapis.com/compute/v1/projects/$PROJECT_ID].
-Updating project ssh metadata...done.
-Waiting for SSH key to propagate.
-```
-
-After the SSH keys have been updated you'll be logged into the `controller-0` instance:
-
-```
-Welcome to Ubuntu 20.04.2 LTS (GNU/Linux 5.4.0-1042-gcp x86_64)
-...
-```
+Reply with `yes` to continue connecting.
 
 Type `exit` at the prompt to exit the `controller-0` compute instance:
 
@@ -248,7 +218,7 @@ $USER@controller-0:~$ exit
 
 ```
 logout
-Connection to XX.XX.XX.XXX closed
+Connection to XX.XX.XXX.XXX closed
 ```
 
 Next: [Provisioning a CA and Generating TLS Certificates](04-certificate-authority.md)
