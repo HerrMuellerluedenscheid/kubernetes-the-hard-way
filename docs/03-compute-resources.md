@@ -52,16 +52,35 @@ hcloud firewall add-rule kubernetes-the-hard-way --protocol tcp --port 6443 --so
 
 List the firewall rules in the `kubernetes-the-hard-way` VPC network:
 
-```
-gcloud compute firewall-rules list --filter="network:kubernetes-the-hard-way"
+```shell
+hcloud firewall describe kubernetes-the-hard-way
 ```
 
 > output
 
 ```
-NAME                                    NETWORK                  DIRECTION  PRIORITY  ALLOW                 DENY  DISABLED
-kubernetes-the-hard-way-allow-external  kubernetes-the-hard-way  INGRESS    1000      tcp:22,tcp:6443,icmp        False
-kubernetes-the-hard-way-allow-internal  kubernetes-the-hard-way  INGRESS    1000      tcp,udp,icmp                Fals
+ID:             1100929
+Name:           kubernetes-the-hard-way
+Created:        Thu Oct 26 11:38:13 CEST 2023 (20 seconds ago)
+Labels:
+  No labels
+Rules:
+  - Direction:          in
+    Protocol:           icmp
+    Source IPs:
+                        0.0.0.0/0
+  - Direction:          in
+    Protocol:           tcp
+    Port:               22
+    Source IPs:
+                        0.0.0.0/0
+  - Direction:          in
+    Protocol:           tcp
+    Port:               6443
+    Source IPs:
+                        0.0.0.0/0
+Applied To:
+  Not applied
 ```
 
 ### Kubernetes Public IP Address

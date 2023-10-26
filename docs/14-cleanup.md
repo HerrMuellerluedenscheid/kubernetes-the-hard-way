@@ -23,3 +23,11 @@ Delete the external load balancer network resources:
   hcloud network delete kubernetes-the-hard-way
 }
 ```
+
+## Firewall
+
+Delete the firewall:
+
+```shell
+hcloud firewall delete kubernetes-the-hard-way
+```
