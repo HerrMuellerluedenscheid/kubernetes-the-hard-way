@@ -87,11 +87,10 @@ Install the worker binaries:
 
 ### Configure CNI Networking
 
-Retrieve the Pod CIDR range for the current compute instance:
+The Pod CIDR range for the current compute instance should be defaulting to `10.200.0.0/16`
 
 ```
-POD_CIDR=$(curl -s -H "Metadata-Flavor: Google" \
-  http://metadata.google.internal/computeMetadata/v1/instance/attributes/pod-cidr)
+POD_CIDR=10.200.0.0/16
 ```
 
 Create the `bridge` network configuration file:
@@ -176,7 +175,7 @@ EOF
 
 ### Configure the Kubelet
 
-```
+```shell
 {
   sudo mv ${HOSTNAME}-key.pem ${HOSTNAME}.pem /var/lib/kubelet/
   sudo mv ${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
