@@ -10,11 +10,10 @@ Each kubeconfig requires a Kubernetes API Server to connect to. To support high 
 
 Generate a kubeconfig file suitable for authenticating as the `admin` user:
 
-```
+```shell
 {
-  KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
-    --region $(gcloud config get-value compute/region) \
-    --format 'value(address)')
+  KUBERNETES_PUBLIC_ADDRESS=$(hcloud load-balancer list --selector tag=kubernetes-the-hard-way -o columns=ipv4 -o noheader)
+
 
   kubectl config set-cluster kubernetes-the-hard-way \
     --certificate-authority=ca.pem \
