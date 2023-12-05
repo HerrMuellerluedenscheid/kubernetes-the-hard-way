@@ -1,54 +1,28 @@
 # Prerequisites
 
-## Google Cloud Platform
+## Hetzner
 
-This tutorial leverages the [Google Cloud Platform](https://cloud.google.com/) to streamline provisioning of the compute infrastructure required to bootstrap a Kubernetes cluster from the ground up. [Sign up](https://cloud.google.com/free/) for $300 in free credits.
+While the original version if this tutorial leverages the [Google Cloud Platform](https://cloud.google.com/)  this fork uses the [Hetzner](http://hetzner.com/) to streamline provisioning of the compute infrastructure required to bootstrap a Kubernetes cluster from the ground up.
 
-[Estimated cost](https://cloud.google.com/products/calculator#id=873932bc-0840-4176-b0fa-a8cfd4ca61ae) to run this tutorial: $0.23 per hour ($5.50 per day).
+[Estimated cost on Google Cloud Platform](https://cloud.google.com/products/calculator#id=873932bc-0840-4176-b0fa-a8cfd4ca61ae) to run this tutorial: **$5.50 per day**.
 
-> The compute resources required for this tutorial exceed the Google Cloud Platform free tier.
+[Estimated cost on Hetzner](https://www.hetzner.com/cloud) to run this tutorial: **$1.25 per day**. We will spawn in total 6 CX21 instances which are 5.77 EUR ($6.25) per month each.
 
-## Google Cloud Platform SDK
 
-### Install the Google Cloud SDK
+## Hetzner Cloud Platform SDK
 
-Follow the Google Cloud SDK [documentation](https://cloud.google.com/sdk/) to install and configure the `gcloud` command line utility.
+### Install the Hetzner Cloud SDK
 
-Verify the Google Cloud SDK version is 338.0.0 or higher:
+Follow the Hetzner [documentation](https://github.com/hetznercloud/cli) to install and configure the `hcloud` command line utility.
+It's also helpful to checkout their [user guide](https://community.hetzner.com/tutorials/howto-hcloud-cli).
 
-```
-gcloud version
-```
-
-### Set a Default Compute Region and Zone
-
-This tutorial assumes a default compute region and zone have been configured.
-
-If you are using the `gcloud` command-line tool for the first time `init` is the easiest way to do this:
+Verify the Hetzner Cloud SDK version is `v1.38.2` or higher:
 
 ```
-gcloud init
+hcloud version
 ```
 
-Then be sure to authorize gcloud to access the Cloud Platform with your Google user credentials:
-
-```
-gcloud auth login
-```
-
-Next set a default compute region and compute zone:
-
-```
-gcloud config set compute/region us-west1
-```
-
-Set a default compute zone:
-
-```
-gcloud config set compute/zone us-west1-c
-```
-
-> Use the `gcloud compute zones list` command to view additional regions and zones.
+You need to create a project to be able to create servers.
 
 ## Running Commands in Parallel with tmux
 
