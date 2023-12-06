@@ -13,7 +13,7 @@ for i in 0 1 2; do
 done
 ```
 
-## Networking
+## Networking and Firewall
 
 Delete the external load balancer network resources:
 
@@ -21,13 +21,6 @@ Delete the external load balancer network resources:
 {
   hcloud load-balancer delete kubernetes-the-hard-way
   hcloud network delete kubernetes-the-hard-way
+  hcloud firewall delete kubernetes-the-hard-way
 }
-```
-
-## Firewall
-
-Delete the firewall:
-
-```shell
-hcloud firewall delete kubernetes-the-hard-way
 ```

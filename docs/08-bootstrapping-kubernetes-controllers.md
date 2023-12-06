@@ -388,15 +388,13 @@ Create the external load balancer network resources:
 
 Retrieve the `kubernetes-the-hard-way` static IP address:
 
-```
-KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
-  --region $(gcloud config get-value compute/region) \
-  --format 'value(address)')
+```bash
+KUBERNETES_PUBLIC_ADDRESS=$(hcloud load-balancer list --selector tag=kubernetes-the-hard-way -o columns=ipv4 -o noheader)
 ```
 
 Make a HTTP request for the Kubernetes version info:
 
-```
+```bash
 curl --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}:6443/version
 ```
 
