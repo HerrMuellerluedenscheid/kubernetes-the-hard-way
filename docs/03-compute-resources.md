@@ -83,27 +83,24 @@ Applied To:
   Not applied
 ```
 
+## Configuring SSH Access
+
+SSH will be used to configure the controller and worker instances. When connecting to compute instances for the first time SSH keys will be generated for you and stored in the project or instance metadata as described in the [connecting to instances](https://cloud.google.com/compute/docs/instances/connecting-to-instance) documentation.
+
+Generate a new SSH key-pair without setting the password:
+```shell
+ssh-keygen -t ed25519 -C "kubernetes-the-hard-way" -N "" -f $HOME/.ssh/hetzner_cloud_ed25519
+```
+
+Upload the **public** key to the Hetzner Cloud:
+
+```shell
+hcloud ssh-key create --name kubernetes-the-hard-way --public-key-from-file $HOME/.ssh/hetzner_cloud_ed25519.pub
+```
+
 ### Kubernetes Public IP Address
 
-Allocate a static IP address that will be attached to the external load balancer fronting the Kubernetes API Servers:
-
-```
-gcloud compute addresses create kubernetes-the-hard-way \
-  --region $(gcloud config get-value compute/region)
-```
-
-Verify the `kubernetes-the-hard-way` static IP address was created in your default compute region:
-
-```
-gcloud compute addresses list --filter="name=('kubernetes-the-hard-way')"
-```
-
-> output
-
-```
-NAME                     ADDRESS/RANGE   TYPE      PURPOSE  NETWORK  REGION    SUBNET  STATUS
-kubernetes-the-hard-way  XX.XXX.XXX.XXX  EXTERNAL                    us-west1          RESERVED
-```
+NOTE: We assign the public address of the load balancer later. Thus, we do not need this step.
 
 ## Compute Instances
 
@@ -159,7 +156,7 @@ echo $CONTROLLER0 $CONTROLLER1 $CONTROLLER2 $WORKER0 $WORKER1 $WORKER2
 
 List the compute instances in your default compute zone:
 
-```
+```bash
 hcloud server list
 ```
 
@@ -173,21 +170,6 @@ ID         NAME           STATUS    IPV4              IPV6                      
 38250524   worker-0       running   XX.XXX.XX.XX      2a01:4f9:c012:92bd::/64   10.240.0.5 (kubernetes-the-hard-way)   hel1-dc2     1m
 38250539   worker-1       running   XX.XXX.XX.XX      2a01:4f9:c010:a664::/64   10.240.0.6 (kubernetes-the-hard-way)   hel1-dc2     45s
 38250543   worker-2       running   XX.XXX.XX.XX      2a01:4f9:c012:7e4a::/64   10.240.0.7 (kubernetes-the-hard-way)   hel1-dc2     28s
-```
-
-## Configuring SSH Access
-
-SSH will be used to configure the controller and worker instances. When connecting to compute instances for the first time SSH keys will be generated for you and stored in the project or instance metadata as described in the [connecting to instances](https://cloud.google.com/compute/docs/instances/connecting-to-instance) documentation.
-
-Generate a new SSH key-pair without setting the password:
-```shell
-ssh-keygen -t ed25519 -C "kubernetes-the-hard-way" -N "" -f $HOME/.ssh/hetzner_cloud_ed25519
-```
-
-Upload the **public** key to the Hetzner Cloud:
-
-```shell
-hcloud ssh-key create --name kubernetes-the-hard-way --public-key-from-file $HOME/.ssh/hetzner_cloud_ed25519.pub
 ```
 
 Test SSH access to the `controller-0` compute instances:
