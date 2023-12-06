@@ -20,14 +20,14 @@ ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${CONTROLLER0}
 
 Download the official etcd release binaries from the [etcd](https://github.com/etcd-io/etcd) GitHub project:
 
-```
+```bash
 wget -q --show-progress --https-only --timestamping \
   "https://github.com/etcd-io/etcd/releases/download/v3.4.15/etcd-v3.4.15-linux-amd64.tar.gz"
 ```
 
 Extract and install the `etcd` server and the `etcdctl` command line utility:
 
-```
+```bash
 {
   tar -xvf etcd-v3.4.15-linux-amd64.tar.gz
   sudo mv etcd-v3.4.15-linux-amd64/etcd* /usr/local/bin/
@@ -36,7 +36,7 @@ Extract and install the `etcd` server and the `etcdctl` command line utility:
 
 ### Configure the etcd Server
 
-```
+```bash
 {
   sudo mkdir -p /etc/etcd /var/lib/etcd
   sudo chmod 700 /var/lib/etcd
@@ -47,24 +47,24 @@ Extract and install the `etcd` server and the `etcdctl` command line utility:
 The instance internal IP address will be used to serve client requests and communicate with etcd cluster peers. Retrieve the internal IP address for the current compute instance:
 
 TODO: This might not working, because the interface name can be different on each node. Need to find a way to get the internal IP address of the current node.
-```
+```bash
 INTERNAL_IP=$(ip -4 addr show enp7s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 ```
 
 Verify the `INTERNAL_IP` was correctly set:
-```
+```bash
 echo ${INTERNAL_IP}
 ```
 
 Each etcd member must have a unique name within an etcd cluster. Set the etcd name to match the hostname of the current compute instance:
 
-```
+```bash
 ETCD_NAME=$(hostname -s)
 ```
 
 Create the `etcd.service` systemd unit file:
 
-```
+```bash
 cat <<EOF | sudo tee /etc/systemd/system/etcd.service
 [Unit]
 Description=etcd
@@ -100,7 +100,7 @@ EOF
 
 ### Start the etcd Server
 
-```
+```bash
 {
   sudo systemctl daemon-reload
   sudo systemctl enable etcd
@@ -114,7 +114,7 @@ EOF
 
 List the etcd cluster members:
 
-```
+```bash
 sudo ETCDCTL_API=3 etcdctl member list \
   --endpoints=https://127.0.0.1:2379 \
   --cacert=/etc/etcd/ca.pem \
@@ -124,7 +124,7 @@ sudo ETCDCTL_API=3 etcdctl member list \
 
 > output
 
-```
+```bash
 3a57933972cb5131, started, controller-2, https://10.240.0.12:2380, https://10.240.0.12:2379, false
 f98dc20bce6225a0, started, controller-0, https://10.240.0.10:2380, https://10.240.0.10:2379, false
 ffed16798470cab5, started, controller-1, https://10.240.0.11:2380, https://10.240.0.11:2379, false
