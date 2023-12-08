@@ -15,5 +15,5 @@ resources:
 EOF
 
 for instance in ${CONTROLLER0} ${CONTROLLER1} ${CONTROLLER2}; do
-  scp -i $HOME/.ssh/hetzner_cloud_ed25519 encryption-config.yaml root@${instance}:~/
+  scp -o StrictHostKeyChecking=no -i $HOME/.ssh/hetzner_cloud_ed25519 encryption-config.yaml root@${instance}:~/
 done

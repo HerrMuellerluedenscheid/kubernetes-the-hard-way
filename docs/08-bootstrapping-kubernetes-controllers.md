@@ -61,6 +61,8 @@ The instance internal IP address will be used to advertise the API Server to mem
 INTERNAL_IP=$(ip -4 addr show enp7s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 ```
 
+TODO: need to get the load balancer ip address here:
+
 ```bash
 KUBERNETES_PUBLIC_ADDRESS=$(ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 ```

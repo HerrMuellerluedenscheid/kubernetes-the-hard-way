@@ -293,11 +293,12 @@ cfssl gencert \
 
 }
 
-scp -i $HOME/.ssh/hetzner_cloud_ed25519 ca.pem worker-0-key.pem worker-0.pem root@${WORKER0}:~/
-scp -i $HOME/.ssh/hetzner_cloud_ed25519 ca.pem worker-1-key.pem worker-1.pem root@${WORKER1}:~/
-scp -i $HOME/.ssh/hetzner_cloud_ed25519 ca.pem worker-2-key.pem worker-2.pem root@${WORKER2}:~/
+echo "Copy certificates to instances"
+scp -o StrictHostKeyChecking=accept-new -i $HOME/.ssh/hetzner_cloud_ed25519 ca.pem worker-0-key.pem worker-0.pem root@${WORKER0}:~/
+scp -o StrictHostKeyChecking=accept-new -i $HOME/.ssh/hetzner_cloud_ed25519 ca.pem worker-1-key.pem worker-1.pem root@${WORKER1}:~/
+scp -o StrictHostKeyChecking=accept-new -i $HOME/.ssh/hetzner_cloud_ed25519 ca.pem worker-2-key.pem worker-2.pem root@${WORKER2}:~/
 
-
+echo "Copy certificates to instances"
 for instance in ${CONTROLLER0} ${CONTROLLER1} ${CONTROLLER2}; do
   scp -i $HOME/.ssh/hetzner_cloud_ed25519 ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
     service-account-key.pem service-account.pem root@${instance}:~/

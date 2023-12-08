@@ -106,7 +106,10 @@ done
   kubectl config use-context default --kubeconfig=admin.kubeconfig
 }
 
+scp -o StrictHostKeyChecking=accept-new -i $HOME/.ssh/hetzner_cloud_ed25519 worker-0.kubeconfig kube-proxy.kubeconfig root@${WORKER0}:~/
+scp -o StrictHostKeyChecking=accept-new -i $HOME/.ssh/hetzner_cloud_ed25519 worker-1.kubeconfig kube-proxy.kubeconfig root@${WORKER1}:~/
+scp -o StrictHostKeyChecking=accept-new -i $HOME/.ssh/hetzner_cloud_ed25519 worker-2.kubeconfig kube-proxy.kubeconfig root@${WORKER2}:~/
 
 for instance in ${CONTROLLER0} ${CONTROLLER1} ${CONTROLLER2}; do
-  scp -i $HOME/.ssh/hetzner_cloud_ed25519 admin.kubeconfig kube-controller-manager.kubeconfig kube-scheduler.kubeconfig root@${instance}:~/
+  scp -o StrictHostKeyChecking=no -i $HOME/.ssh/hetzner_cloud_ed25519 admin.kubeconfig kube-controller-manager.kubeconfig kube-scheduler.kubeconfig root@${instance}:~/
 done

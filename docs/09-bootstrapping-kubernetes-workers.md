@@ -37,7 +37,7 @@ Verify if swap is enabled:
 sudo swapon --show
 ```
 
-If output is empthy then swap is not enabled. If swap is enabled run the following command to disable swap immediately:
+If output is empty then swap is not enabled. If swap is enabled run the following command to disable swap immediately:
 
 ```
 sudo swapoff -a
@@ -291,13 +291,14 @@ EOF
 
 ## Verification
 
-> The compute instances created in this tutorial will not have permission to complete this section. Run the following commands from the same machine used to create the compute instances.
+> The compute instances created in this tutorial will not have permission to complete this section. Run the following commands from one of the **CONTROLLERS**.
 
 List the registered Kubernetes nodes:
 
 ```
-gcloud compute ssh controller-0 \
-  --command "kubectl get nodes --kubeconfig admin.kubeconfig"
+ssh $CONTROLLER0   # first login to controller-0
+
+kubectl get nodes --kubeconfig admin.kubeconfig   # on controller0 get the nodes
 ```
 
 > output

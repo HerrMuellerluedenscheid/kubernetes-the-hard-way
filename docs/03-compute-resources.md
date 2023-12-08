@@ -217,4 +217,4 @@ hcloud load-balancer add-service kubernetes-the-hard-way  --destination-port 644
 hcloud load-balancer add-target --label-selector "role=controller" kubernetes-the-hard-way
 ```
 
-If you check the hetzner console you will see that this load balancer has and will have an unhealthy state for the next steps. This will only change once all services are bootstrapped.
+If you check the hetzner console you will see that this load balancer will have an unhealthy state for the next steps. This will only change once all services are bootstrapped.
