@@ -23,6 +23,15 @@ for i in 0 1 2; do
   hcloud server create --firewall kubernetes-the-hard-way --name worker-${i} --image ubuntu-20.04 --type cpx11 --network kubernetes-the-hard-way --label tag=worker-${i} --ssh-key kubernetes-the-hard-way
 done
 
+# give the ssh servers some time to boot
+sleep 10
+## Setting environment variables for the next steps
+for i in 0 1 2; do
+  export TMP_IP=$(hcloud server list --selector "tag=worker-${i}" -o columns=ipv4 -o noheader)
+  echo "Setting environment variables for worker-${i} with IP ${TMP_IP}"
+  ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${TMP_IP} -o StrictHostKeyChecking=accept-new -n "echo \"POD_CIDR=0.200.${i}.0/24\" >> /etc/environment"
+done
+
 hcloud server list
 
 echo "Create a load balancer"

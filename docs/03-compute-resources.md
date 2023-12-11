@@ -126,10 +126,6 @@ done
 
 ### Kubernetes Workers
 
-Each worker instance requires a pod subnet allocation from the Kubernetes cluster CIDR range. The pod subnet allocation will be used to configure container networking in a later exercise. The `pod-cidr` instance metadata will be used to expose pod subnet allocations to compute instances at runtime.
-
-> The Kubernetes cluster CIDR range is defined by the Controller Manager's `--cluster-cidr` flag. In this tutorial the cluster CIDR range will be set to `10.200.0.0/16`, which supports 254 subnets.
-
 Create three compute instances which will host the Kubernetes worker nodes:
 
 ```shell
@@ -151,6 +147,19 @@ Confirm that the environment variables were created. This should list 6 IPv4 add
 echo $CONTROLLER0 $CONTROLLER1 $CONTROLLER2 $WORKER0 $WORKER1 $WORKER2
 ```
 
+### set environment variables
+
+Each worker instance requires a pod subnet allocation from the Kubernetes cluster CIDR range. The pod subnet allocation will be used to configure container networking in a later exercise. We store the `POD_CIDR` as an environment variable on each worker instance.
+
+> The Kubernetes cluster CIDR range is defined by the Controller Manager's `--cluster-cidr` flag. In this tutorial the cluster CIDR range will be set to `10.200.0.0/16`, which supports 254 subnets.
+
+```shell
+for i in 0 1 2; do
+  export TMP_IP=$(hcloud server list --selector "tag=worker-${i}" -o columns=ipv4 -o noheader)
+  echo "Setting environment variables for worker-${i} with IP ${TMP_IP}"
+  ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${TMP_IP} -o StrictHostKeyChecking=accept-new -n "echo \"POD_CIDR=0.200.${i}.0/24\" >> /etc/environment"
+done
+```
 
 ### Verification
 
