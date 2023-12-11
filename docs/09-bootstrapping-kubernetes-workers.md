@@ -87,11 +87,7 @@ Install the worker binaries:
 
 ### Configure CNI Networking
 
-The Pod CIDR range for the current compute instance should be defaulting to `10.200.0.0/16`
-
-```
-POD_CIDR=10.200.0.0/16
-```
+The Pod CIDR range for the current node was stored in an environment variable `POD_CIDR` during the bootstrapping process.
 
 Create the `bridge` network configuration file:
 

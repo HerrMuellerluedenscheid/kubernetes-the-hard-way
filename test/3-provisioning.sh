@@ -29,7 +29,7 @@ sleep 10
 for i in 0 1 2; do
   export TMP_IP=$(hcloud server list --selector "tag=worker-${i}" -o columns=ipv4 -o noheader)
   echo "Setting environment variables for worker-${i} with IP ${TMP_IP}"
-  ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${TMP_IP} -o StrictHostKeyChecking=accept-new -n "echo \"POD_CIDR=0.200.${i}.0/24\" >> /etc/environment"
+  ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${TMP_IP} -o StrictHostKeyChecking=accept-new -n "echo \"POD_CIDR=10.200.${i}.0/24\" >> /etc/environment"
 done
 
 hcloud server list
