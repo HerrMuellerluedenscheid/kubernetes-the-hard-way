@@ -184,13 +184,13 @@ ID         NAME           STATUS    IPV4              IPV6                      
 Test SSH access to the `controller-0` compute instances:
 
 ```shell
-ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${CONTROLLER0}
+hcloud server ssh controller-0 -i $HOME/.ssh/hetzner_cloud_ed25519
 ```
 
 If this is your first time connecting to a compute instance SSH keys will be generated for you. Enter a passphrase at the prompt to continue:
 
 ```
-❯ ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${WORKER0}
+❯ hcloud server ssh controller-0 -i $HOME/.ssh/hetzner_cloud_ed25519
 
 The authenticity of host 'XX.XX.XXX.XXX (XX.XX.XXX.XXX)' can't be established.
 ED25519 key fingerprint is SHA256:ijdfoiDoisDfj12309sd0f9u123oijsdf.

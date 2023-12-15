@@ -7,7 +7,7 @@ In this lab you will bootstrap three Kubernetes worker nodes. The following comp
 The commands in this lab must be run on each worker instance: `worker-0`, `worker-1`, and `worker-2`. Login to each worker instance using the `gcloud` command. Example:
 
 ```
-gcloud compute ssh worker-0
+hcloud server ssh worker-0 -i $HOME/.ssh/hetzner_cloud_ed25519
 ```
 
 ### Running commands in parallel with tmux
@@ -195,8 +195,6 @@ authentication:
 authorization:
   mode: Webhook
 clusterDomain: "cluster.local"
-clusterDNS:
-  - "10.32.0.10"
 podCIDR: "${POD_CIDR}"
 resolvConf: "/run/systemd/resolve/resolv.conf"
 runtimeRequestTimeout: "15m"
@@ -292,7 +290,7 @@ EOF
 List the registered Kubernetes nodes:
 
 ```
-ssh $CONTROLLER0   # first login to controller-0
+hcloud server ssh controller-0 -i $HOME/.ssh/hetzner_cloud_ed25519  # login to controller-0
 
 kubectl get nodes --kubeconfig admin.kubeconfig   # on controller0 get the nodes
 ```

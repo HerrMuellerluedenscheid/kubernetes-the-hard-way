@@ -7,7 +7,7 @@ Kubernetes components are stateless and store cluster state in [etcd](https://gi
 The commands in this lab must be run on each controller instance: `controller-0`, `controller-1`, and `controller-2`. Login to each controller instance using the `hcloud` command. Example:
 
 ```shell
-ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${CONTROLLER0}
+hcloud server ssh controller-0 -i $HOME/.ssh/hetzner_cloud_ed25519
 ```
 
 ### Running commands in parallel with tmux

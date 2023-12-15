@@ -15,8 +15,8 @@ kubectl create secret generic kubernetes-the-hard-way \
 
 Print a hexdump of the `kubernetes-the-hard-way` secret stored in etcd:
 
-```
-gcloud compute ssh controller-0 \
+```shell
+hcloud server ssh controller-0 \
   --command "sudo ETCDCTL_API=3 etcdctl get \
   --endpoints=https://127.0.0.1:2379 \
   --cacert=/etc/etcd/ca.pem \

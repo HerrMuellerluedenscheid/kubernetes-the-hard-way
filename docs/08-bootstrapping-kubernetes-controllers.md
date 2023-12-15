@@ -7,7 +7,7 @@ In this lab you will bootstrap the Kubernetes control plane across three compute
 The commands in this lab must be run on each controller instance: `controller-0`, `controller-1`, and `controller-2`. Login to each controller instance using the `hcloud` command. Example:
 
 ```shell
-ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${CONTROLER0}
+hcloud server ssh controller-0 -i $HOME/.ssh/hetzner_cloud_ed25519
 ```
 
 ### Running commands in parallel with tmux
@@ -291,7 +291,7 @@ In this section you will configure RBAC permissions to allow the Kubernetes API 
 The commands in this section will effect the entire cluster and only need to be run once from one of the controller nodes.
 
 ```bash
-ssh -i $HOME/.ssh/hetzner_cloud_ed25519 root@${CONTROLLER0}
+hcloud server ssh controller-0 -i $HOME/.ssh/hetzner_cloud_ed25519
 ```
 
 Create the `system:kube-apiserver-to-kubelet` [ClusterRole](https://kubernetes.io/docs/admin/authorization/rbac/#role-and-clusterrole) with permissions to access the Kubelet API and perform most common tasks associated with managing pods:
